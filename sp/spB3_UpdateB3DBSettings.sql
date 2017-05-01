@@ -1,26 +1,16 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 01/20/2017 11:25:47 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spB3_UpdateB3DBSettings]') AND type in (N'P', N'PC'))
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 4/30/2017 7:40:20 PM ******/
 DROP PROCEDURE [dbo].[spB3_UpdateB3DBSettings]
 GO
 
-USE [Daily]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 01/20/2017 11:25:47 ******/
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 4/30/2017 7:40:20 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-
-
-
-
-
 
 
 
@@ -200,11 +190,6 @@ begin
 end
 else if (@SettingId = 20)
 begin 
-
---declare @MilliSec int 
---Set @MilliSec = (CAST(@Value as int) * 1000)
---Set @Value = CAST(@MilliSec as varchar(50))
-
 	SET @sqlCommand = 'Update b3.dbo.B3_playerConfig set timetocollect =  cast('''+ @value +''' as int)' 
 end
 else if (@SettingId = 21)
@@ -276,27 +261,7 @@ begin
 	SET @sqlCommand = 'Update b3.dbo.Server_GameSettings set gamestartdelay =  cast('''+ @value +''' as int)' 
 end
 else if (@SettingId = 36)
-begin 
-
---if (CHARINDEX('.', @Value) != 0)
---	begin
-	
---		set @count = (select len(SUBSTRING(@Value, CHARINDEX('.', @Value), LEN(@Value))) - 1)
- 
---               while (@count != 2)
---				begin
---				   set @Value = @Value + '0';
---				   set @count = @count + 1
---				end	
---	end
---	else
---	begin
-
---	   set @Value = @Value + '.00'
---	end
-	
---	set @Value = REPLACE(@Value, '.', '')
-			
+begin 			
 	SET @sqlCommand = 'Update b3.dbo.Server_GameSettings set consolationprizeamount =  cast('''+ @value +''' as bigint)' 
 end
 else if (@SettingId = 37)
@@ -311,48 +276,10 @@ end
 --SESSION
 else if (@SettingId = 39)
 begin 
-
---if (CHARINDEX('.', @Value) != 0)
---	begin
-
---		set @count = (select len(SUBSTRING(@Value, CHARINDEX('.', @Value), LEN(@Value))) - 1)
- 
---               while (@count != 2)
---				begin
---				   set @Value = @Value + '0';
---				   set @count = @count + 1
---				end	
---	end
---	else
---	begin
-
---	   set @Value = @Value + '.00'
---	end
-	
-	--set @Value = REPLACE(@Value, '.', '')
 	SET @sqlCommand = 'Update b3.dbo.B3_Session set payoutlimit =  cast('''+ @value +''' as bigint)' 
 end
 else if (@SettingId = 40)
 begin 
-
---if (CHARINDEX('.', @Value) != 0)
---	begin
-
---		set @count = (select len(SUBSTRING(@Value, CHARINDEX('.', @Value), LEN(@Value))) - 1)
- 
---               while (@count != 2)
---				begin
---				   set @Value = @Value + '0';
---				   set @count = @count + 1
---				end	
---	end
---	else
---	begin
-
---	   set @Value = @Value + '.00'
---	end
-	
-	--set @Value = REPLACE(@Value, '.', '')
 	SET @sqlCommand = 'Update b3.dbo.B3_Session set jackpotlimit =  cast('''+ @value +''' as bigint)' 
 end
 else if (@SettingId = 41)
@@ -363,24 +290,6 @@ end
 --SYSTEM SETTING
 else if (@SettingId = 42)
 begin 
---if (CHARINDEX('.', @Value) != 0)
---	begin
-
---		set @count = (select len(SUBSTRING(@Value, CHARINDEX('.', @Value), LEN(@Value))) - 1)
- 
---               while (@count != 2)
---				begin
---				   set @Value = @Value + '0';
---				   set @count = @count + 1
---				end
---	end
---	else
---	begin
-
---	   set @Value = @Value + '.00'
---	end
-	
---	set @Value = REPLACE(@Value, '.', '')
 	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set handpaytrigger =  cast('''+ @value +''' as bigint)' 
 end
 else if (@SettingId = 43)
@@ -390,26 +299,6 @@ end
 
 else if (@SettingId = 44)
 begin 
---if (CHARINDEX('.', @Value) != 0)
---	begin
-
---		set @count = (select len(SUBSTRING(@Value, CHARINDEX('.', @Value), LEN(@Value))) - 1)
- 
---               while (@count != 2)
---				begin
---				   set @Value = @Value + '0';
---				   set @count = @count + 1
---				end
-	
-
---	end
---	else
---	begin
-
---	   set @Value = @Value + '.00'
---	end
-	
---	set @Value = REPLACE(@Value, '.', '')
 	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set vippointmultiplier =  cast('''+ @value +''' as bigint)' 
 end
 else if (@SettingId = 45)
@@ -473,49 +362,16 @@ else if (@SettingId = 57)
 begin 
 	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set mainvol =  cast('''+ @value +''' as int)' 
 end
+else if (@SettingId = 61)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set w2trigger =  cast('''+ @value +''' as int)' 
+end
+
 
 --select @sqlCommand
 exec (@sqlCommand)
 
---Sync value to Daily DB (daily.dbo.B3SettingGame)
---if (@SettingId = 58)
---	begin
---	IF OBJECT_ID('tempdb..#TempTable') IS not null drop table #TempTable 
---	Create table #TempTable  
---	(SettingID int, Denom int)
 
---	insert into #TempTable(SettingID, Denom) 
---	values 
---	(1, 1), 
---	(2,5), 
---	(3,10), 
---	(4,25), 
---	(5,50), 
---	(6,100),
---	(7,200), 
---	(8,500)
-
---    set @count = 1
-
---	while (@count != 9)--No cursor
---	begin
---	declare @denom int
---	select @denom = Denom from #TempTable where SettingID = @count
-
---	set @sqlCommand =   'update x
---						set x.Value = y.denom_' + CAST(@denom as varchar(10))  + ' 
---						from daily.dbo.B3SettingGame x 
---						join #TempTable z on z.SettingID = x.SettingID,
---						' + @TableName +' y
---						where x.B3GameID = '+ cast (@GameID as varchar(10))  +'
---						and x.SettingID = ' + cast(@count as varchar(10))
-								
---			 exec (@sqlCommand)
---			 set @count = @count + 1
---	end
-	 
---	IF OBJECT_ID('tempdb..#TempTable') IS not null drop table #TempTable 
---end
 
 
 
