@@ -98,22 +98,22 @@ execute sp_executesql @SQLCommand, @ParamDef, @B3ValueOUT = @B3Value OUTPUT
 --Do we need to update the daily.dbo.B3SettingsGlobal  If they dont match?
 --There is no need to update the daily.dbo.B3SettingsGlobal it will update when the user hit the save button.
 
-if (@B3Value != @Value)
-	begin
-		if (@GameId != 0)
-		begin
-			update B3SettingsGlobal 
-			set SettingValue = @B3Value
-			where SettingID = @B3SettingId 
-		end
-		else
-		begin
-			update B3SettingGame 
-			set Value = @B3Value
-			where SettingID = @B3SettingId
-			and B3GameID = @GameId
-		end
-	end
+--if (@B3Value != @Value)
+--	begin
+--		if (@GameId != 0)
+--		begin
+--			update B3SettingsGlobal 
+--			set SettingValue = @B3Value
+--			where SettingID = @B3SettingId 
+--		end
+--		else
+--		begin
+--			update B3SettingGame 
+--			set Value = @B3Value
+--			where SettingID = @B3SettingId
+--			and B3GameID = @GameId
+--		end
+--	end
 return
 
 end

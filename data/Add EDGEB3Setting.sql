@@ -11,4 +11,4 @@ end
 insert into [Daily].[dbo].[B3SettingsGlobal](SettingID, SettingCategoryID, SettingValue, SettingDesc)
 values (61, 7, cast(@w2Trigger as varchar(100)),'W2 Trigger' )
 
-select * from [Daily].[dbo].[B3SettingsGlobal] where SettingID = 61
+
