@@ -20,11 +20,12 @@ GO
 
 CREATE proc [dbo].[spB3_CreateAccount]
 -- ============================================================================
--- Date: 20151130 
--- Description: Creates a B3 Account
+--	Date: 20151130 
+--	Description: Creates a B3 Account
 --
---  US4381
---DE13139 - Add staff name to Session Transaction Report
+--	US4381
+--	DE13139 - Add staff name to Session Transaction Report
+--	DE13577(20170502) -> Get the machine name on EDGE system passed it through B3 system
 -- ============================================================================
     @machineId int
     , @staffId int
@@ -40,10 +41,13 @@ as
 declare @StaffUserName char(50)
 set @StaffUserName = (select FirstName + ' ' + LastName from Daily.dbo.Staff where StaffID = @staffId)
 
+--DE13577(20170502) -> Get the machine name on EDGE system passed it through B3 system
+declare @Machine nvarchar(20)
+select @Machine = cast(MachineID as nvarchar(20)) from Daily.dbo.Machine where CAST(ClientIdentifier as nvarchar(20)) = @clientMAC
     
     execute B3.dbo.usp_sales_b3_CreateCreditAcct
         @clientMac -- the MAC of the machine that made the sale
-        , '' -- Client Name, the name of the machine
+        , @Machine --'' -- Client Name, the name of the machine
         , @StaffUserName -- Staff user name, using blank to use the staffid
         , @amount -- the amount to add to the account in pennies
         , 0 -- The vip number
