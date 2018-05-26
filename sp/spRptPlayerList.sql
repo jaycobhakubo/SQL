@@ -1,25 +1,18 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 05/25/2018 15:13:09 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spRptPlayerList]') AND type in (N'P', N'PC'))
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 5/26/2018 12:04:05 PM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList]
 GO
 
-USE [Daily]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 05/25/2018 15:13:09 ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 5/26/2018 12:04:05 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-
-
-CREATE PROCEDURE [dbo].[spRptPlayerList]
+CREATE proc [dbo].[spRptPlayerList]
 -- ============================================================================
 -- Author:		GameTech
 -- Description:	Print mailing labels for VIP players
@@ -34,10 +27,98 @@ CREATE PROCEDURE [dbo].[spRptPlayerList]
 -- 2013.09.10 jkn: Added default parameter to functions
 -- 2013.09.19 knc: Convert Cast @StartDate and @EndDate to Date disregarding the time. 
 -- 2017.08.04 tmp: WithPlayerSpend Changed from datediff(day, 1, @EndDate) to @EndDate. 
--- 2018.04.17 tmp: Spend Option changed from calling a function to a CTE to improved performance. 
---                 Matches with changes previously made in spRpPlayerList2 and spRptPlayerList3.
---                 Use the PointBalances table rather than recalculating to get life time spend. 
 -- ============================================================================
+-- ==================TEST========================
+-- /***************PLEASE DO NOT DELETE*******************************//
+--DECLARE 
+-- @OperatorID as int,   
+-- @BDFrom as Datetime,      -- DE9192
+-- @BDEnd as Datetime,  
+-- @GenderType as nvarchar(4),
+-- @Min as Money,  
+-- @Max as Money,
+-- @PBOptionSelected nvarchar(50),
+-- @PBOptionValue money,   
+-- @LVStart as Datetime,  
+-- @LVEnd as Datetime,  
+-- @Spend as bit,  
+-- @Average as Bit,  
+-- @AmountFrom as money,  
+-- @AmountTo as money,  
+-- @StartDate as Datetime,  
+-- @EndDate as Datetime, 
+-- @SAOption as bit,
+-- @SAOptionSelected nvarchar(50),
+-- @SAOptionValue money,   
+-- @StatusID as nvarchar(max), 
+-- @LocationType int,
+-- @LocationDefinition nvarchar(max)
+-- ,@IsNOfDaysPlayed bit 
+-- ,@IsNOfSessioPlayed bit
+--,@DPDateRangeFrom datetime
+--,@DPDateRangeTo datetime
+--,@IsDPRange bit
+--,@DPRangeFrom int--
+--,@DPRangeTo  int--
+--,@IsDPOption bit
+--,@DPOprtionSelected nvarchar(50)
+--,@DPOptionValue int
+--,@IsSPRange bit
+--,@SPRangeFrom int
+--,@SPRangeTo  int
+--,@IsSPOption bit
+--,@SPOprtionSelected nvarchar(50)
+--,@SPOptionValue int
+--,@DaysOfWeekNSessionNbr varchar(max)
+--,@IsPackageName bit
+--,@PackageName varchar(500)
+
+
+
+
+--set @OperatorID = 1   
+--set @BDFrom =  N'01/01/1900'
+--set @BDEnd = N'01/01/1900'
+--set @GenderType = N'M'
+--set @Min = N'-1.00'
+--set @Max = N'0.00'
+--set @PBOptionSelected = N''
+--set @PBOptionValue = N'0.00'
+--set @LVStart = N'01/01/1900'
+--set @LVEnd = N'01/01/1900'
+--set @Spend = 0
+--set @Average = 0
+--set @AmountFrom = N'0.00'
+--set @AmountTo = N'0.00'
+--set @StartDate = N'01/01/1900'
+--set @EndDate = N'01/01/1900'
+--set @SAOption = 0
+--set @SAOptionSelected = N''
+--set @SAOptionValue = N'0.00'
+--set @StatusID = N''
+--set @LocationType = 0
+--set @LocationDefinition = N''
+--set @IsNOfDaysPlayed = 0
+--set @IsNOfSessioPlayed = 0
+--set @DPDateRangeFrom =N'01/01/1900'
+--set @DPDateRangeTo = N'01/01/1900'
+--set @IsDPRange = 0
+--set @DPRangeFrom = 0
+--set @DPRangeTo  = 0
+--set @IsDPOption = 0
+--set @DPOprtionSelected = N''
+--set @DPOptionValue =0
+--set @IsSPRange =0
+--set @SPRangeFrom =0
+--set @SPRangeTo =0
+--set @IsSPOption =0
+--set @SPOprtionSelected =N''
+--set @SPOptionValue =0
+--set @DaysOfWeekNSessionNbr = N''
+--set @IsPackageName =0
+--set  @PackageName =N''
+--- ===========================================================================
+
  @OperatorID as int,   
  @BDFrom as Datetime,      -- DE9192
  @BDEnd as Datetime,  
@@ -80,6 +161,8 @@ CREATE PROCEDURE [dbo].[spRptPlayerList]
 ,@IsPackageName bit
 ,@PackageName varchar(500)
 as
+
+
 
 SET NOCOUNT ON  
 
@@ -141,150 +224,41 @@ set @BDEnd = dateadd(year, datediff(year, @BDEnd, '1/1/2000'), @BDEnd)
 
 if (@Average = 1 or @Spend =1)
 begin
-	
-	;with cte_PlayerSpend
-	(
-		PlayerID,
-		RegisterReceiptId,
-		Spend
-	)
-	as
-		(
-			select  rr.PlayerID,
-					rr.RegisterReceiptID,
-					case rr.TransactionTypeID 
-						when 1 then ((sum(isnull(rd.PackagePrice, 0) * isnull(rd.Quantity, 0))) + (sum(isnull(rd.DiscountAmount, 0) * isnull(rd.Quantity, 0))) + (sum(isnull(rd.SalesTaxAmt, 0) * isnull(rd.Quantity, 0))))
-						when 3 then ((sum(isnull(rd.PackagePrice, 0) * isnull(rd.Quantity, 0))) + (sum(isnull(DiscountAmount, 0) * isnull(Quantity, 0))) + (sum(isnull(rd.SalesTaxAmt, 0) * isnull(rd.Quantity, 0)))) * -1
-					end 
-			from	RegisterReceipt rr
-					join RegisterDetail rd on rr.RegisterReceiptID = rd.RegisterReceiptID
-					--join #TempPlayer tp on rr.PlayerID = tp.PlayerID
-			where	rr.OperatorID = @OperatorID
-					and rr.GamingDate >= CAST(CONVERT(varchar(12), @StartDate, 101) AS smalldatetime)
-					and rr.GamingDate <= CAST(CONVERT(varchar(12), @EndDate, 101) AS smalldatetime)
-					and rr.TransactionTypeID in (1, 3)
-					and rr.SaleSuccess = 1
-					and rr.PlayerID is not null
-					and rd.VoidedRegisterReceiptID is null
-			group by rr.RegisterReceiptID, rr.PlayerID, rr.TransactionTypeID
-		)
-		,	cte_PlayerSpendDeviceFees
-			(
-				PlayerID,
-				RegisterReceiptID,
-				Spend
-			)
-			as
-				(
-					select  ctePS.PlayerID,
-							ctePS.RegisterReceiptID,
-							isnull(ctePS.Spend, 0) + isnull(rr.DeviceFee, 0)
-					from	RegisterReceipt rr
-							join cte_PlayerSpend ctePS on rr.RegisterReceiptID = ctePS.RegisterReceiptId
-				)
-				, cte_PlayerTotalAvgSpend
-				(
-					PlayerID,
-					AverageSpend,
-					Spend
-				)
-				as 
-					(
-						select	PlayerID,
-								(sum(ctePSDF.Spend) / count(RegisterReceiptID)),
-								sum(ctePSDF.spend)
-						from cte_PlayerSpendDeviceFees ctePSDF
-						group by PlayerID
-					)
-	
-	
-	
-	--;with PlayerSpendData (Spend,AvgSpend,PlayerId)
-	--as
-	--(
-	--	select TotalSpend, AverageSpend, PlayerID from dbo.fnGetSpendAveragePerPlayer(@OperatorID,@StartDate, @EndDate ,default) 
-	--)
-	 -- INSERT ALL Players into this temporary table  
-	insert into @TempPlayerList
-	(
-		FirstName
-		, MiddleInitial
-		, LastName
-		, PlayerID
-		, Birthdate
-		, Email
-		, Gender
-		, Address1
-		, Address2
-		, City
-		, State
-		, Country
-		, Zip
-		, Refundable
-		, NonRefundable
-		, LastVisitDate
-		, PointsBalance
-		, OperatorID
-		, Spend
-		, Visits
-		, AvgSpend
-		, GovIssuedIdNum
-		, PlayerIdent
-		, Phone
-		, JoinDate
-		, Comment
-		, MagCardNo
-	)
-	select	p.FirstName
-			, p.MiddleInitial
-			, p.LastName
-			, p.PlayerID
-			, p.BirthDate
-			, p.EMail
-			, p.Gender
-			, a.Address1
-			, a.Address2
-			, a.City
-			, a.State
-			, a.Country
-			, a.Zip
-			, isnull(cb.Refundable, 0)
-			, isnull(cb.NonRefundable, 0)
-			, pInfo.LastVisitDate
-			, isnull(pb.pbPointsBalance, 0)
-			, @OperatorID
-		--	, isnull(psd.Spend, 0)
-			, isnull(ctePSDF.Spend, 0)
-			, pInfo.VisitCount
-			, isnull(ctePSDF.AverageSpend, 0)
-	--		, isnull(psd.AvgSpend, 0)
-			, p.GovIssuedIDNum
-			, p.PlayerIdent
-			, p.Phone
-			, pInfo.FirstVisitDate
-			, pInfo.Comment
-			, pmc.MagneticCardNo
-	from	Player p
-			join [Address] a on p.AddressID = a.AddressID
-			join PlayerInformation pInfo on p.PlayerId = pInfo.PlayerId
-			join CreditBalances cb on pInfo.CreditBalancesId = cb.CreditBalancesId
-			join PointBalances pb on pInfo.PointBalancesId = pb.pbPointBalancesId
-			left join PlayerMagCards pmc on p.PlayerId = pmc.PlayerId
-			/*DE11153/TA11924 left -->*/  --join PlayerSpendData psd on psd.PlayerId = p.PlayerId/*<--DE11153/TA11924 */
-			join cte_PlayerTotalAvgSpend ctePSDF on ctePSDF.PlayerID = p.PlayerID	
-end
-else 
-begin
 	;with PlayerSpendData (Spend,AvgSpend,PlayerId)
 	as
 	(
-		--select TotalSpend, /*AverageSpend*/ null, PlayerID from dbo.fnGetSpendAveragePerPlayer(@OperatorID,'1/1/1900', getdate(),default)
-		select  pb.pbTotalSpentAmt,
-				null,
-				p.PlayerID
-		from	Player p
-				left join PlayerInformation pin on p.PlayerID = pin.PlayerID
-				left join PointBalances pb on pin.PointBalancesID = pb.pbPointBalancesID
+		select TotalSpend, AverageSpend, PlayerID from dbo.fnGetSpendAveragePerPlayer(@OperatorID,@StartDate, @EndDate ,default) 
+	)
+	 -- INSERT ALL Players into this temporary table  
+	insert into @TempPlayerList
+	(FirstName, MiddleInitial, LastName, PlayerID, Birthdate
+	,Email, Gender, Address1, Address2, City
+	,State, Country, Zip, Refundable, NonRefundable
+	,LastVisitDate, PointsBalance, OperatorID, Spend, Visits
+	,AvgSpend, GovIssuedIdNum, PlayerIdent, Phone, JoinDate
+	,Comment, MagCardNo)
+	 select
+	p.FirstName, p.MiddleInitial, p.LastName, p.PlayerID, p.BirthDate
+	,p.EMail, p.Gender, a.Address1, a.Address2, a.City
+	,a.State, a.Country, a.Zip, isnull(cb.Refundable, 0), isnull(cb.NonRefundable, 0)
+	,pInfo.LastVisitDate, isnull(pb.pbPointsBalance, 0), @OperatorID, isnull(psd.Spend, 0), pInfo.VisitCount
+	,isnull(psd.AvgSpend, 0), p.GovIssuedIDNum, p.PlayerIdent, p.Phone, pInfo.FirstVisitDate
+	,pInfo.Comment, pmc.MagneticCardNo
+	from Player p
+	join [Address] a on p.AddressID = a.AddressID
+	join PlayerInformation pInfo on p.PlayerId = pInfo.PlayerId
+	join CreditBalances cb on pInfo.CreditBalancesId = cb.CreditBalancesId
+	join PointBalances pb on pInfo.PointBalancesId = pb.pbPointBalancesId
+	left join PlayerMagCards pmc on p.PlayerId = pmc.PlayerId
+	/*DE11153/TA11924 left -->*/  join PlayerSpendData psd on psd.PlayerId = p.PlayerId/*<--DE11153/TA11924 */
+end
+else 
+begin
+
+	;with PlayerSpendData (Spend,AvgSpend,PlayerId)
+	as
+	(select TotalSpend, /*AverageSpend*/ null, PlayerID from dbo.fnGetSpendAveragePerPlayer(@OperatorID,'1/1/1900', getdate(),default)
+
 	)
 	 -- INSERT ALL Players into this temporary table  
 	insert into @TempPlayerList
@@ -308,7 +282,40 @@ begin
 	join PointBalances pb on pInfo.PointBalancesId = pb.pbPointBalancesId
 	left join PlayerMagCards pmc on p.PlayerId = pmc.PlayerId
 	/*DE11153/TA11924 left -->*/ left join PlayerSpendData psd on psd.PlayerId = p.PlayerId/*<--DE11153/TA11924 */
+	
+	--where p.Gender = 'M'--knc
+	--select * from @TempPlayerList
+	
+	
+
+	 -- INSERT ALL Players into this temporary table  
+	insert into @TempPlayerList
+	(FirstName, MiddleInitial, LastName, PlayerID, Birthdate
+	,Email, Gender, Address1, Address2, City
+	,State, Country, Zip, Refundable, NonRefundable
+	,LastVisitDate, PointsBalance, OperatorID, Spend, Visits
+	,AvgSpend, GovIssuedIdNum, PlayerIdent, Phone, JoinDate
+	,Comment, MagCardNo)
+	 select
+	p.FirstName, p.MiddleInitial, p.LastName, p.PlayerID, p.BirthDate
+	,p.EMail, p.Gender, a.Address1, a.Address2, a.City
+	,a.State, a.Country, a.Zip, isnull(cb.Refundable, 0), isnull(cb.NonRefundable, 0)
+	,pInfo.LastVisitDate, isnull(pb.pbPointsBalance, 0), @OperatorID, 0, pInfo.VisitCount
+	,/*isnull(psd.AvgSpend, 0)*/NULL , p.GovIssuedIDNum, p.PlayerIdent, p.Phone, pInfo.FirstVisitDate
+	,pInfo.Comment, pmc.MagneticCardNo
+	from Player p
+	join [Address] a on p.AddressID = a.AddressID
+	join PlayerInformation pInfo on p.PlayerId = pInfo.PlayerId
+	join CreditBalances cb on pInfo.CreditBalancesId = cb.CreditBalancesId
+	join PointBalances pb on pInfo.PointBalancesId = pb.pbPointBalancesId
+	left join PlayerMagCards pmc on p.PlayerId = pmc.PlayerId
+	/*DE11153/TA11924 left -->*/ --left join PlayerSpendData psd on psd.PlayerId = p.PlayerId/*<--DE11153/TA11924 */
+	
+	--where p.Gender = 'M'--knc
+
+	
 end
+
 
 
 
@@ -422,7 +429,6 @@ and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationSta
 	
 
 
-
 	declare @IsDaysOfWeeknSession bit
 	if (@DaysOfWeekNSessionNbr = '')  --If its empty
 	begin
@@ -433,6 +439,7 @@ and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationSta
 		set @IsDaysOfWeeknSession = 1
 	end
 
+	
 	if (@IsDaysOfWeeknSession = 1 or @IsNOfDaysPlayed = 1 or @IsNOfSessioPlayed = 1)
 	begin
 		if (@IsDaysOfWeeknSession = 1) 
@@ -586,6 +593,7 @@ and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationSta
 				GamingDate datetime) 
 
 			delete from @TempPlayer 
+			
 			if (@IsNOfDaysPlayed = 1)
 			begin 
 				if (@IsDPRange = 1)
@@ -1192,55 +1200,57 @@ end
 
 
 if (@Spend = 1 and   @SAOption = 0)
- select  
-    PlayerID, FirstName, MiddleInitial, LastName, BirthDate
-  , Email, Gender, Address1, Address2, City
-  , [State], Country, Zip, Refundable, NonRefundable
-  , LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
-  , StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
-  , JoinDate, Comment, MagCardNo,   NDaysPlayed , NSessionPlayed, GamingDate, SessionNbr, [Days]   
- from  
-  #TempPlayer
- where  
-  Spend >= @AmountFrom AND  
-  Spend <= @AmountTo  
- order by  
-  LastName  
- asc  
+begin
+		select  
+		PlayerID, FirstName, MiddleInitial, LastName, BirthDate
+		, Email, Gender, Address1, Address2, City
+		, [State], Country, Zip, Refundable, NonRefundable
+		, LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
+		, StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
+		, JoinDate, Comment, MagCardNo,   NDaysPlayed , NSessionPlayed, GamingDate, SessionNbr, [Days]   
+		from  
+		#TempPlayer
+		where  
+		Spend >= @AmountFrom AND  
+		Spend <= @AmountTo  
+		order by  
+		LastName  
+		asc
+end  
 else if (@Average = 1 and @SAOption = 0) 
 begin
-
-
- select  
-    PlayerID, FirstName, MiddleInitial, LastName, BirthDate
-  , Email, Gender, Address1, Address2, City
-  , [State], Country, Zip, Refundable, NonRefundable
-  , LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
-  , StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
-  , JoinDate, Comment, MagCardNo  ,   NDaysPlayed ,NSessionPlayed , GamingDate, SessionNbr, [Days]   
- from  
-  #TempPlayer
- where  
-  AvgSpend >= @AmountFrom AND  
-  AvgSpend <= @AmountTo  
- order by  
-  LastName  
- asc  
+		select  
+		PlayerID, FirstName, MiddleInitial, LastName, BirthDate
+		, Email, Gender, Address1, Address2, City
+		, [State], Country, Zip, Refundable, NonRefundable
+		, LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
+		, StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
+		, JoinDate, Comment, MagCardNo  ,   NDaysPlayed ,NSessionPlayed , GamingDate, SessionNbr, [Days]   
+		from  
+		#TempPlayer
+		where  
+		AvgSpend >= @AmountFrom AND  
+		AvgSpend <= @AmountTo  
+		order by  
+		LastName  
+		asc  
 end
 else
+begin
+		select  
+		PlayerID, FirstName, MiddleInitial, LastName, BirthDate
+		, Email, Gender, Address1, Address2, City
+		, [State], Country, Zip, Refundable, NonRefundable
+		, LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
+		, StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
+		, JoinDate, Comment, MagCardNo  ,   NDaysPlayed , NSessionPlayed , GamingDate, SessionNbr, [Days]   
+		from  
+		#TempPlayer
+		order by  
+		LastName
+		desc
+end
 
-  select  
-    PlayerID, FirstName, MiddleInitial, LastName, BirthDate
-  , Email, Gender, Address1, Address2, City
-  , [State], Country, Zip, Refundable, NonRefundable
-  , LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
-  , StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
-  , JoinDate, Comment, MagCardNo  ,   NDaysPlayed , NSessionPlayed , GamingDate, SessionNbr, [Days]   
- from  
-  #TempPlayer
- order by  
-  LastName 
- desc
 
  drop table #TempPlayer 
 
@@ -1408,6 +1418,8 @@ else
 	--/*DE11151->*/and (@Average  = 0 or(rr.GamingDate >= CAST(CONVERT(varchar(12), @StartDate, 101) AS smalldatetime)  
 	--and   rr.GamingDate < CAST(CONVERT(varchar(12), @EndDate, 101) AS smalldatetime)))/*<-DE11151*/
 	--group by rr.PlayerId, pnr.NoOfReceipt  
+
+
 
 GO
 
