@@ -96,6 +96,8 @@ BEGIN
 		, @IsSPOption bit, @SPOprtionSelected nvarchar(50), @SPOptionValue int
 		, @DaysOfWeekNSessionNbr varchar(max)
 		, @IsPackageName bit, @PackageName varchar(500)
+		, @AgeOptionSelected NVARCHAR(50)
+		, @AgeValue INT
 		;
 
 	EXEC spLoadPlayerListDetails @definitionId
@@ -119,6 +121,8 @@ BEGIN
 		, @IsSPOption OUTPUT, @SPOprtionSelected OUTPUT, @SPOptionValue OUTPUT
 		, @DaysOfWeekNSessionNbr OUTPUT
 		, @IsPackageName OUTPUT, @PackageName OUTPUT
+		, @AgeOptionSelected  OUTPUT
+		, @AgeValue  OUTPUT 
 		;	
 
 	INSERT INTO @PlayerList(PlayerID, FirstName, MiddleInitial, LastName, Birthdate, Email, Gender, Address1, Address2, City, State, Country, Zip
@@ -145,6 +149,7 @@ BEGIN
 		, @IsSPOption, @SPOprtionSelected, @SPOptionValue
 		, @DaysOfWeekNSessionNbr
 		, @IsPackageName, @PackageName
+		, @AgeOptionSelected ,@AgeValue 
 		
 		;
 
