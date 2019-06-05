@@ -1,7 +1,7 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spLoadPlayerListDetails]    Script Date: 06/05/2019 15:06:46 ******/
+/****** Object:  StoredProcedure [dbo].[spLoadPlayerListDetails]    Script Date: 06/05/2019 14:53:43 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spLoadPlayerListDetails]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[spLoadPlayerListDetails]
 GO
@@ -9,7 +9,7 @@ GO
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spLoadPlayerListDetails]    Script Date: 06/05/2019 15:06:46 ******/
+/****** Object:  StoredProcedure [dbo].[spLoadPlayerListDetails]    Script Date: 06/05/2019 14:53:43 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -62,6 +62,8 @@ CREATE PROCEDURE [dbo].[spLoadPlayerListDetails]
 	, @DaysOfWeekNSessionNbr VARCHAR(MAX) OUTPUT
 	, @IsPackageName BIT OUTPUT
 	, @PackageName VARCHAR(500) OUTPUT
+	, @AgeOptionSelected NVARCHAR(50) OUTPUT
+	, @AgeValue INT OUTPUT
 AS
 BEGIN
 
@@ -107,6 +109,10 @@ BEGIN
 	SET @DaysOfWeekNSessionNbr = '';
 	SET @IsPackageName = 0;
 	SET @PackageName = '';
+	SET @AgeOptionSelected = '';
+	SET @AgeValue = 0;
+
+
 
 	DECLARE @SettingID int
 		, @SettingValue varchar(500)
@@ -348,6 +354,33 @@ BEGIN
 			SET @SAOptionValue = @SettingValue;
 			SET @Average = 1;
 		END
+		ELSE IF (@SettingID = 52 /* Age Greater Than */)
+		BEGIN
+			SET @AgeOptionSelected = '>';
+			SET @AgeValue= @SettingValue;
+		END
+		ELSE IF (@SettingID = 53 /* Age Greater Than Or Equal To */)
+		BEGIN
+		    SET @AgeOptionSelected = '>=';
+			SET @AgeValue= @SettingValue;
+		END
+		ELSE IF (@SettingID = 54 /* Age Equal To */)
+		BEGIN
+			SET @AgeOptionSelected = '=';
+			SET @AgeValue= @SettingValue;
+		END
+		ELSE IF (@SettingID = 55 /* Age Less Than Or Equal To */)
+		BEGIN
+			SET @AgeOptionSelected = '<=';
+			SET @AgeValue= @SettingValue;
+		END
+		ELSE IF (@SettingID = 56 /* Age Less Than */)
+		BEGIN
+			SET @AgeOptionSelected = '<';
+			SET @AgeValue= @SettingValue;
+		END
+		
+	
 
 		FETCH NEXT FROM PlayerListDetailCursor INTO @SettingID, @SettingValue;
 
