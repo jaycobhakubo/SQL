@@ -1,20 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 06/04/2019 13:23:45 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spRptPlayerList]') AND type in (N'P', N'PC'))
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 6/19/2019 11:01:13 AM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList]
 GO
 
-USE [Daily]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 06/04/2019 13:23:45 ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 6/19/2019 11:01:13 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -37,7 +34,6 @@ CREATE PROCEDURE [dbo].[spRptPlayerList]
 --                 Matches with changes previously made in spRpPlayerList2 and spRptPlayerList3.
 --                 Use the PointBalances table rather than recalculating to get life time spend. 
 -- 2019.05.21 tmp: DE14391 Changed @EndDate to nolonger add a day to it.
--- 2019.06.04 knc: US5787 Added support for filtering player list by age
 -- ============================================================================
  @OperatorID as int,   
  @BDFrom as Datetime,      -- DE9192
@@ -80,8 +76,6 @@ CREATE PROCEDURE [dbo].[spRptPlayerList]
 ,@DaysOfWeekNSessionNbr varchar(max)
 ,@IsPackageName bit
 ,@PackageName varchar(500)
-,@AgeOptionSelected nvarchar(50)
-,@AgeValue int
 as
 
 SET NOCOUNT ON  
@@ -98,7 +92,6 @@ declare @ZipCode varchar(max)   set @ZipCode = '' if (@LocationType = 3) set @Zi
 declare @Country varchar(max)   set @Country = '' if (@LocationType = 4) set @Country = @LocationDefinition ;
 set @StartDate =  cast(CONVERT(VARCHAR(10),@StartDate,10) as datetime)
 set @EndDate =  cast(CONVERT(VARCHAR(10),@EndDate,10) as datetime)
-
 
 declare @TempPlayerList table
  (FirstName nvarchar(32),   
@@ -423,12 +416,6 @@ and (@Country = '' or tpl.Country in (select Country from FnRptPlayerListLocatio
 and (@CityName = '' or tpl.City in (select City from FnRptPlayerListLocationCity(@CityName)))
 and (@ZipCode = '' or tpl.Zip in (select ZipCode from  FnRptPlayerListLocationZipCode(@ZipCode)))
 and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationState(@State)))
-
-
-
-
-
-
 	
 
 
@@ -1198,63 +1185,6 @@ begin
 		)
 	end
 end
-
---select @AgeValue
-
-if (@AgeValue != 0)
-begin 
-
-delete @TempPlayer
-insert into @TempPlayer
-select * from #TempPlayer
-delete #TempPlayer
-
-		if (@AgeOptionSelected = '>')
-		begin
-			insert into #TempPlayer
-			select * from @TempPlayer 
-			where Birthdate is not null
-			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) > @AgeValue
-		end
-		else
-		if (@AgeOptionSelected = '>=')
-		begin
-			insert into #TempPlayer
-			select * from @TempPlayer 
-			where Birthdate is not null
-			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) >= @AgeValue
-		end
-		else
-		if (@AgeOptionSelected = '=')
-		begin
-			insert into #TempPlayer
-			select * from @TempPlayer 
-			where Birthdate is not null
-			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) = @AgeValue
-		end
-		else
-		if (@AgeOptionSelected = '<=')
-		begin
-			insert into #TempPlayer
-			select * from @TempPlayer 
-			where Birthdate is not null
-			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) <= @AgeValue
-		end
-		else
-		if (@AgeOptionSelected = '<=')
-		begin
-			insert into #TempPlayer
-			select * from @TempPlayer 
-			where Birthdate is not null
-			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) < @AgeValue
-		end
-end
-		
 
 
 
