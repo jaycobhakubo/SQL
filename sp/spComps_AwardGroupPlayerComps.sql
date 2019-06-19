@@ -28,6 +28,7 @@ CREATE  proc  [dbo].[spComps_AwardGroupPlayerComps]
 -- 20181220 JBV: Eliminated population of CompAward's AwardedCount and UsedCount fields (fields removed from table)
 -- 2019.01.21 jbv: Replaced player list detail processing code (duplicated across many procs) 
 --                 with call to new LoadPlayerListDetails proc
+-- 2019.06.19 knc: Added to support a group of player by age
 --=============================================================================
     @operatorId int
     ,@definitionId int

@@ -1,22 +1,20 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 05/31/2019 10:53:52 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]') AND type in (N'P', N'PC'))
+/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/19/2019 11:21:17 AM ******/
 DROP PROCEDURE [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]
 GO
 
-USE [Daily]
-GO
-
-/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 05/31/2019 10:53:52 ******/
+/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/19/2019 11:21:17 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
--- =============================================
+
+
+-- ============================================================================
 -- Author:		Landerman, Lou
 -- Create date: 10/18/2017
 -- Description:	Populates Table ModuleFeatures
@@ -26,7 +24,14 @@ GO
 -- 2018.03.19: JAN - US5542 adding caller permissions
 --
 -- 2018.04.26: JAN - adding security center permissions
--- =============================================
+-- 2018.11.01: JKN - US5709 Adding Pre-Sales permissions
+-- 2018.12.07: JBV = Added permission for Card Position Map management.
+-- 2018.12.20: JKIM - updated Presale text to remove hyphen
+-- 2019.02.13: JKN - US5775 Added permission to the Caller for the ability
+--  to change the precall definition
+-- 2019.02.25: RAK - Added authorized menu button.
+-- 2019.06.19: KNC - Added authorized to removed players's comp
+-- ============================================================================
 CREATE PROCEDURE [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]
 AS
 BEGIN
@@ -576,7 +581,73 @@ BEGIN
 		UPDATE [ModuleFeatures] SET [ModuleID] = 5,[ModuleFeatureName] = 'Manage Staff Member''s Positions',[ModuleFeatureDescription] = 'Allows the user to manage the positions that a staff has assigned to them',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 62;
 	END
 
-	
+	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 63)
+	BEGIN
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(63,1,'Refund Presale Transactions','Allows the user to be able to refund a transaction that was presold for an event',0,0,1)
+	END
+	ELSE
+	BEGIN
+		UPDATE [ModuleFeatures] SET [ModuleID] = 1,[ModuleFeatureName] = 'Refund Presale Transactions',[ModuleFeatureDescription] = 'Allows the user to be able to refund a transaction that was presold for an event',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 63;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 64)
+	BEGIN
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(64,22,'Create Presales Events','Allows the user the ability to enable and disable the presales flag on events',0,0,1)
+	END
+	ELSE
+	BEGIN
+		UPDATE [ModuleFeatures] SET [ModuleID] = 22,[ModuleFeatureName] = 'Create Presales Events',[ModuleFeatureDescription] = 'Allows the user the ability to enable and disable the presales flag on events',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 64;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 65)
+	BEGIN
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(65,22,'Cancel Presale Events','Allows the user the ability to cancel an event that can be presold',0,0,1)
+	END
+	ELSE
+	BEGIN
+		UPDATE [ModuleFeatures] SET [ModuleID] = 22,[ModuleFeatureName] = 'Cancel Presale Events',[ModuleFeatureDescription] = 'Allows the user the ability to cancel an event that can be presold',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 65;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 66)
+	BEGIN
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(66,3,'Expire Player Points','Allows the user to zero-out player point balances',0,0,1)
+	END
+	ELSE
+	BEGIN
+		UPDATE [ModuleFeatures] SET [ModuleID] = 3,[ModuleFeatureName] = 'Expire Player Points', [ModuleFeatureDescription] = 'Allows the user to zero-out player point balances',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 66;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 67)
+	BEGIN
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])
+		VALUES(67, 6, 'Card Position Map Management', 'Allows the user to manage card position maps', 0, 0, 1)
+		;
+	END
+	ELSE
+	BEGIN
+		UPDATE [ModuleFeatures] 
+		SET [ModuleID] = 6, [ModuleFeatureName] = 'Card Position Map Management', [ModuleFeatureDescription] = 'Allows the user to manage card position maps', [IsCreditFeature] = 0, [IsGTIStaffFeature] = 0, [SequenceNo] = 1 
+		WHERE [ModuleFeatureID] = 67;
+	END
+
+    IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureId] = 68)
+    BEGIN
+        INSERT INTO [ModuleFeatures] ([ModuleFeatureId],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(68,11,'Change precall definition','Ability to change the precall definition from what was defined in the game.',0,0,1)
+    END
+    ELSE
+    BEGIN
+        UPDATE [ModuleFeatures] SET [ModuleID] = 11,[ModuleFeatureName] = 'Change precall definition', [ModuleFeatureDescription] = 'Ability to change the precall definition from what was defined in the game.',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 68;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureId] = 69)
+    BEGIN
+        INSERT INTO [ModuleFeatures] ([ModuleFeatureId],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(69,1,'Authorized menu button access','User may authorize the use of an authorization required menu button.',0,0,1)
+    END
+    ELSE
+    BEGIN
+        UPDATE [ModuleFeatures] SET [ModuleID] = 1, [ModuleFeatureName] = 'Authorized menu button access', [ModuleFeatureDescription] = 'User may authorize the use of an authorization required menu button.',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 69;
+    END
+
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 70)
 	BEGIN
 		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(70,198,'Allow Edit Menu','Allows the user to use the edit menu in Inventory Center',0,0,1)
@@ -588,13 +659,13 @@ BEGIN
 	
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 71)
 	BEGIN
-		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(71,198,'Allow Issue Price Changes','Allows the user to change prices on a issue or in a transaction',0,0,1)
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(71,198,'Allow Issue Price Changes','Allows the user to change prices when issuing in Inventory Center',0,0,1)
 	END
 	ELSE
 	BEGIN
-		UPDATE [ModuleFeatures] SET [ModuleID] = 198,[ModuleFeatureName] = 'Allow Issue Price Changes',[ModuleFeatureDescription] = 'Allows the user to change prices on a issue or in a transaction',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 71;
+		UPDATE [ModuleFeatures] SET [ModuleID] = 198,[ModuleFeatureName] = 'Allow Issue Price Changes',[ModuleFeatureDescription] = 'Allows the user to change prices when issuing in Inventory Center',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 71;
 	END
-		
+
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 72)
 	BEGIN
 		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(72,3,'Removed Coupon to Player','Allows the user to removed coupon of a existing player',0,0,1)

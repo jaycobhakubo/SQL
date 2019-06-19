@@ -20,6 +20,7 @@ GO
 CREATE PROCEDURE [dbo].[spLoadPlayerListDetails]
 --====================================================================================
 -- 2019.01.21 jbv : created common procedure for loading/interpreting player list details.
+-- 2019.06.19 knc: Added parameter age to support a group of player by age.
 --====================================================================================
 	@definitionId int
 	, @BDFrom DATETIME OUTPUT
