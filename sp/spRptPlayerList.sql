@@ -1,20 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 06/04/2019 13:23:45 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spRptPlayerList]') AND type in (N'P', N'PC'))
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/9/2019 2:12:09 PM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList]
 GO
 
-USE [Daily]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 06/04/2019 13:23:45 ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/9/2019 2:12:09 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -1215,7 +1212,10 @@ delete #TempPlayer
 			select * from @TempPlayer 
 			where Birthdate is not null
 			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) > @AgeValue
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) > @AgeValue
 		end
 		else
 		if (@AgeOptionSelected = '>=')
@@ -1224,7 +1224,10 @@ delete #TempPlayer
 			select * from @TempPlayer 
 			where Birthdate is not null
 			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) >= @AgeValue
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) >= @AgeValue
 		end
 		else
 		if (@AgeOptionSelected = '=')
@@ -1233,7 +1236,10 @@ delete #TempPlayer
 			select * from @TempPlayer 
 			where Birthdate is not null
 			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) = @AgeValue
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) = @AgeValue
 		end
 		else
 		if (@AgeOptionSelected = '<=')
@@ -1242,16 +1248,22 @@ delete #TempPlayer
 			select * from @TempPlayer 
 			where Birthdate is not null
 			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) <= @AgeValue
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) <= @AgeValue
 		end
 		else
-		if (@AgeOptionSelected = '<=')
+		if (@AgeOptionSelected = '<')
 		begin
 			insert into #TempPlayer
 			select * from @TempPlayer 
 			where Birthdate is not null
 			and 
-			DATEDIFF(YEAR, Birthdate, GETDATE()) < @AgeValue
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) < @AgeValue
 		end
 end
 		
@@ -1475,6 +1487,7 @@ else
 	--/*DE11151->*/and (@Average  = 0 or(rr.GamingDate >= CAST(CONVERT(varchar(12), @StartDate, 101) AS smalldatetime)  
 	--and   rr.GamingDate < CAST(CONVERT(varchar(12), @EndDate, 101) AS smalldatetime)))/*<-DE11151*/
 	--group by rr.PlayerId, pnr.NoOfReceipt  
+
 
 GO
 

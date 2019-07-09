@@ -1,16 +1,18 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/19/2019 11:21:17 AM ******/
+/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/20/2019 10:40:56 AM ******/
 DROP PROCEDURE [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]
 GO
 
-/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/19/2019 11:21:17 AM ******/
+/****** Object:  StoredProcedure [dbo].[SQLSOURCECONTROL_POPULATETABLE_ModuleFeatures]    Script Date: 6/20/2019 10:40:56 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
+
 
 
 
@@ -448,11 +450,11 @@ BEGIN
 
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 48)
 	BEGIN
-		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(48,3,'Manual Points Award to Player','Award Points to Player',0,0,1)
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(48,3,'Manual Point Adjustment','Award Points to Player',0,0,1)
 	END
 	ELSE
 	BEGIN
-		UPDATE [ModuleFeatures] SET [ModuleID] = 3,[ModuleFeatureName] = 'Manual Points Award to Player',[ModuleFeatureDescription] = 'Award Points to Player',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 48;
+		UPDATE [ModuleFeatures] SET [ModuleID] = 3,[ModuleFeatureName] = 'Manual Point Adjustment',[ModuleFeatureDescription] = 'Award Points to Player',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 48;
 	END
 
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 49)
@@ -668,15 +670,17 @@ BEGIN
 
 	IF NOT EXISTS (SELECT 1 FROM [ModuleFeatures] WHERE [ModuleFeatureID] = 72)
 	BEGIN
-		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(72,3,'Removed Coupon to Player','Allows the user to removed coupon of a existing player',0,0,1)
+		INSERT INTO [ModuleFeatures] ([ModuleFeatureID],[ModuleID],[ModuleFeatureName],[ModuleFeatureDescription],[IsCreditFeature],[IsGTIStaffFeature],[SequenceNo])VALUES(72,3,'Removed Coupon from Player','Allows the user to removed coupon of a existing player',0,0,1)
 	END
 	ELSE
 	BEGIN
-		UPDATE [ModuleFeatures] SET [ModuleID] = 3,[ModuleFeatureName] = 'Removed Coupon to Player',[ModuleFeatureDescription] = 'Allows the user to removed coupon of a existing player',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 72;
+		UPDATE [ModuleFeatures] SET [ModuleID] = 3,[ModuleFeatureName] = 'Removed Coupon from Player',[ModuleFeatureDescription] = 'Allows the user to removed coupon of a existing player',[IsCreditFeature] = 0,[IsGTIStaffFeature] = 0,[SequenceNo] = 1 WHERE [ModuleFeatureID] = 72;
 	END
 
 	SET IDENTITY_INSERT [dbo].[ModuleFeatures] OFF
 END
+
+
 
 GO
 
