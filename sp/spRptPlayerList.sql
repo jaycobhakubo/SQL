@@ -1,16 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/9/2019 2:12:09 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/15/2019 2:30:35 PM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/9/2019 2:12:09 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList]    Script Date: 7/15/2019 2:30:35 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -72,7 +73,7 @@ CREATE PROCEDURE [dbo].[spRptPlayerList]
 ,@SPRangeFrom int
 ,@SPRangeTo  int
 ,@IsSPOption bit
-,@SPOprtionSelected nvarchar(50)
+,@SPOptionSelected nvarchar(50)
 ,@SPOptionValue int
 ,@DaysOfWeekNSessionNbr varchar(max)
 ,@IsPackageName bit
@@ -634,11 +635,11 @@ and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationSta
 					 select * from #TempPlayer 
 					 where 
 					 case 
-						 when @SPOprtionSelected = '>' and NSessionPlayed > @SPOptionValue then 1
-						 when @SPOprtionSelected = '>=' and NSessionPlayed >= @SPOptionValue then 1
-						 when @SPOprtionSelected = '=' and NSessionPlayed = @SPOptionValue then 1
-						 when @SPOprtionSelected = '<' and NSessionPlayed < @SPOptionValue then 1
-						 when @SPOprtionSelected = '<=' and NSessionPlayed <= @SPOptionValue then 1
+						 when @SPOptionSelected = '>' and NSessionPlayed > @SPOptionValue then 1
+						 when @SPOptionSelected = '>=' and NSessionPlayed >= @SPOptionValue then 1
+						 when @SPOptionSelected = '=' and NSessionPlayed = @SPOptionValue then 1
+						 when @SPOptionSelected = '<' and NSessionPlayed < @SPOptionValue then 1
+						 when @SPOptionSelected = '<=' and NSessionPlayed <= @SPOptionValue then 1
 						 else 0
 					end = 1
 				end
@@ -799,7 +800,7 @@ and (@State = '' or tpl.State in (select [State] from FnRptPlayerListLocationSta
 				, LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
 				, StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
 				, JoinDate, Comment, MagCardNo, NDaysPlayed ,x.NSessionPlayed    from #TempPlayer  TP join 
-				(   select PlayerID, GamingDate, NSessionPlayed  from  FnNSessionPlayed (nullif(@DPDateRangeFrom,'1900-01-01 00:00:00') ,nullif(@DPDateRangeTo,'1900-01-01 00:00:00')  ,null ,null ,null ,@IsSPOption , @SPOprtionSelected ,@SPOptionValue )) x --this works
+				(   select PlayerID, GamingDate, NSessionPlayed  from  FnNSessionPlayed (nullif(@DPDateRangeFrom,'1900-01-01 00:00:00') ,nullif(@DPDateRangeTo,'1900-01-01 00:00:00')  ,null ,null ,null ,@IsSPOption , @SPOptionSelected ,@SPOptionValue )) x --this works
 				on x.PlayerID = TP.PlayerID 
 
 				delete from #TempPlayer 
@@ -1096,6 +1097,37 @@ end
 
 	end
 
+	
+
+--EXCLUDE BANNED PLAYERS
+--DE14425
+--Check if theres a banned status
+if exists(Select 1 from PlayerStatusCode where Banned != 0 and IsActive = 1)
+Begin
+
+	delete @TempPlayer
+	insert into @TempPlayer
+	select * from #TempPlayer
+	delete #TempPlayer
+
+	insert into #TempPlayer ( PlayerID, FirstName, MiddleInitial, LastName, BirthDate
+  , Email, Gender, Address1, Address2, City
+  , [State], Country, Zip, Refundable, NonRefundable
+  , LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
+  , StatusName, OperatorID, GovIssuedIdNum, PlayerIdent, Phone
+  , JoinDate, Comment, MagCardNo,   NDaysPlayed , NSessionPlayed, GamingDate, SessionNbr, [Days]   )
+	select  tp.PlayerID, FirstName, MiddleInitial, LastName, BirthDate
+  , Email, Gender, Address1, Address2, City
+  , [State], Country, Zip, Refundable, NonRefundable
+  , LastVisitDate, PointsBalance, Spend, AvgSpend, Visits
+  , tp.StatusName, tp.OperatorID, GovIssuedIdNum, PlayerIdent, Phone
+  , JoinDate, Comment, MagCardNo,   NDaysPlayed , NSessionPlayed, GamingDate, SessionNbr, [Days]    from @TempPlayer  tp
+	left join PlayerStatus ps on ps.PlayerID = tp.PlayerID 
+	left join PlayerStatusCode psc on  psc.PlayerStatusCodeID = ps.PlayerStatusCodeID
+	where 
+	psc.Banned IS NULL or psc.Banned != 1
+
+End
 
 
 if (@Status = 1)
@@ -1116,6 +1148,7 @@ begin
 			join PlayerStatusCode psc on ps.PlayerStatusCodeId = psc.PlayerStatusCodeId
 		where
 			ps.PlayerId = @curPlayerId
+			
 	
 
 			--select @statusName
@@ -1182,6 +1215,7 @@ begin
 --		and psc.StatusName in (select StatusName  from  dbo.FnRptPlayerListStatus(@StatusID))
 
 
+
 		insert into #TempPlayer 
 		select * from @TempPlayer 
 		where 
@@ -1192,6 +1226,7 @@ begin
 		join PlayerStatusCode psc on  psc.PlayerStatusCodeID = ps.PlayerStatusCodeID 
 		where  tp.StatusName like '%|%'
 		and psc.StatusName in (select StatusName  from  dbo.FnRptPlayerListStatus(@StatusID)))
+	
 		)
 	end
 end
@@ -1364,7 +1399,7 @@ else
 --,@SPRangeFrom int
 --,@SPRangeTo  int
 --,@IsSPOption bit
---,@SPOprtionSelected nvarchar(50)
+--,@SPOptionSelected nvarchar(50)
 --,@SPOptionValue int
 --,@DaysOfWeekNSessionNbr varchar(max)
 --,@IsPackageName bit
@@ -1408,7 +1443,7 @@ else
 --set @SPRangeFrom = 0
 --set @SPRangeTo  = 0
 --set @IsSPOption = 0
---set @SPOprtionSelected = N''
+--set @SPOptionSelected = N''
 --set @SPOptionValue = 0
 --set @DaysOfWeekNSessionNbr = ''
 --set @IsPackageName = 0
@@ -1487,6 +1522,7 @@ else
 	--/*DE11151->*/and (@Average  = 0 or(rr.GamingDate >= CAST(CONVERT(varchar(12), @StartDate, 101) AS smalldatetime)  
 	--and   rr.GamingDate < CAST(CONVERT(varchar(12), @EndDate, 101) AS smalldatetime)))/*<-DE11151*/
 	--group by rr.PlayerId, pnr.NoOfReceipt  
+
 
 
 GO
