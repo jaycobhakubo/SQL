@@ -67,6 +67,8 @@ CREATE proc [dbo].[spRptPlayerList2]
 ,@DaysOfWeekNSessionNbr varchar(max)
 ,@IsPackageName bit
 ,@PackageName varchar(500)
+,@AgeOptionSelected nvarchar(50)
+,@AgeValue int
 ,@TotalNumberOfPlayers int output
 as
 --==============
@@ -1139,6 +1141,76 @@ Begin
 	psc.Banned IS NULL or psc.Banned != 1
 
 End
+
+if (@AgeValue != 0)
+begin 
+
+delete @TempPlayer
+insert into @TempPlayer
+select * from #TempPlayer
+delete #TempPlayer
+
+		if (@AgeOptionSelected = '>')
+		begin
+			insert into #TempPlayer
+			select * from @TempPlayer 
+			where Birthdate is not null
+			and 
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) > @AgeValue
+		end
+		else
+		if (@AgeOptionSelected = '>=')
+		begin
+			insert into #TempPlayer
+			select * from @TempPlayer 
+			where Birthdate is not null
+			and 
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) >= @AgeValue
+		end
+		else
+		if (@AgeOptionSelected = '=')
+		begin
+			insert into #TempPlayer
+			select * from @TempPlayer 
+			where Birthdate is not null
+			and 
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) = @AgeValue
+		end
+		else
+		if (@AgeOptionSelected = '<=')
+		begin
+			insert into #TempPlayer
+			select * from @TempPlayer 
+			where Birthdate is not null
+			and 
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) <= @AgeValue
+		end
+		else
+		if (@AgeOptionSelected = '<')
+		begin
+			insert into #TempPlayer
+			select * from @TempPlayer 
+			where Birthdate is not null
+			and 
+			(DATEDIFF(YEAR, Birthdate, GETDATE()) - CASE WHEN(
+    (MONTH(Birthdate)*100 + DAY(Birthdate)) >
+    (MONTH(GETDATE())*100 + DAY(GETDATE()))
+  ) THEN 1 ELSE 0 END) < @AgeValue
+		end
+end
+		
 
 
 if (@Spend = 1 and   @SAOption = 0)
