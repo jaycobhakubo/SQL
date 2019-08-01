@@ -1,16 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 1:19:34 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:04:02 PM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList2]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 1:19:34 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:04:02 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -25,6 +26,8 @@ CREATE proc [dbo].[spRptPlayerList2]
 --               was calculated. Moved to calculate the spend to happen before checking the spend options.
 --               Also optimized the spend calculation.
 -- 2019.05.21 tmp: DE14391 Changed @EndDate to nolonger add a day to it.
+-- 2019.08.01 knc: US5787 Added support for filtering player list by age
+-- 2019.08.01 knc: Exclude banned players.
 --======================
  @OperatorID as int,   
  @BDFrom as Datetime,     
@@ -1267,6 +1270,7 @@ set @TotalNumberOfPlayers =
  )
 
 drop table #TempPlayer
+
 
 
 
