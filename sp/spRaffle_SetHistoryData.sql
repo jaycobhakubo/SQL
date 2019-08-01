@@ -1,16 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRaffle_SetHistoryData]    Script Date: 8/1/2019 2:48:15 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRaffle_SetHistoryData]    Script Date: 8/1/2019 3:18:52 PM ******/
 DROP PROCEDURE [dbo].[spRaffle_SetHistoryData]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRaffle_SetHistoryData]    Script Date: 8/1/2019 2:48:15 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRaffle_SetHistoryData]    Script Date: 8/1/2019 3:18:52 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -26,6 +27,7 @@ CREATE PROCEDURE [dbo].[spRaffle_SetHistoryData]
 --(DE12855.knc.20160119) Add Player Raffle entrants per player list.
 --(DE12866.knc.20160128) Error found in US4438: Generate a list of players to enter into a raffle > Drawing Entrants by Date is not correct.
 -- 2019.01.21 jbv: Replaced player list detail processing code (duplicated across many procs) with call to new LoadPlayerListDetails proc
+-- 2019.08.01 knc: US5787 Added support for filtering player list by age
 --=============================================================================
     @raffleDefinitionId int
     , @operatorId int
@@ -155,6 +157,7 @@ BEGIN
 			, @IsSPOption, @SPOprtionSelected, @SPOptionValue
 			, @DaysOfWeekNSessionNbr
 			, @IsPackageName, @PackageName
+			, @AgeOptionSelected , @AgeValue 
 			;
 
 	
@@ -168,6 +171,7 @@ BEGIN
 	SET NOCOUNT OFF;
 
 END
+
 
 
 

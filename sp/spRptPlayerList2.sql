@@ -1,11 +1,11 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:04:02 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:17:13 PM ******/
 DROP PROCEDURE [dbo].[spRptPlayerList2]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:04:02 PM ******/
+/****** Object:  StoredProcedure [dbo].[spRptPlayerList2]    Script Date: 8/1/2019 3:17:13 PM ******/
 SET ANSI_NULLS ON
 GO
 
