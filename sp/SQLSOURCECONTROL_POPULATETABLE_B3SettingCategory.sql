@@ -86,6 +86,15 @@ BEGIN
 	BEGIN
 		UPDATE [B3SettingCategory] SET [CategoryName] = 'System' WHERE [CategoryID] = 7;
 	END
+
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingCategory] WHERE [CategoryID] = 8)
+	BEGIN
+		INSERT INTO [B3SettingCategory] ([CategoryID],[CategoryName])VALUES(8,'Geofencing')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingCategory] SET [CategoryName] = 'Geofencing' WHERE [CategoryID] = 8;
+	END
 END
 
 
