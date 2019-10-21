@@ -582,6 +582,58 @@ BEGIN
 	BEGIN
 		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 1, [SettingDesc] = 'RF Required For Play' WHERE [SettingID] = 63;
 	END
+
+	--GEOFENCING SETTING
+	--Enable Geofencing
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 64)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(64,8,NULL, 'Enable Geofencing')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Enable Geofencing' WHERE [SettingID] = 64;
+	END
+
+	--Longtitude
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 65)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(65,8,NULL, 'Longtitude')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Longtitude' WHERE [SettingID] = 65;
+	END
+
+	--Latitude
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 66)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(66,8,NULL, 'Latitude')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Latitude' WHERE [SettingID] = 66;
+	END
+
+	--Yellow Zone
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 67)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(67,8,NULL, 'Yellow Zone')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Yellow Zone' WHERE [SettingID] = 67;
+	END
+
+	--Red Zone
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 68)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(68,8,NULL, 'Red Zone')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Red Zone' WHERE [SettingID] = 68;
+	END
+
 END
 
 
