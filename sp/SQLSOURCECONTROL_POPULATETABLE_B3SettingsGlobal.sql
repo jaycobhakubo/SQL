@@ -594,14 +594,14 @@ BEGIN
 		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Enable Geofencing' WHERE [SettingID] = 64;
 	END
 
-	--Longtitude
+	--Longitude
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 65)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(65,8,NULL, 'Longtitude')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(65,8,NULL, 'Longitude')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Longtitude' WHERE [SettingID] = 65;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Longitude' WHERE [SettingID] = 65;
 	END
 
 	--Latitude
