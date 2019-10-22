@@ -1,17 +1,16 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 4/30/2017 7:48:46 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/22/2019 2:44:51 PM ******/
 DROP PROCEDURE [dbo].[spB3_GetB3SettingValue]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 4/30/2017 7:48:46 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/22/2019 2:44:51 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
 
 
 CREATE proc [dbo].[spB3_GetB3SettingValue]
@@ -23,6 +22,10 @@ CREATE proc [dbo].[spB3_GetB3SettingValue]
 	@B3Value nvarchar(500) output
 )
 as
+--==========================
+--20170502(knc): Add support for w2trigger settings
+--20191022(knc): Added setting for geofencing
+--==========================
 begin
 
 declare @Table nvarchar(100)
@@ -44,6 +47,7 @@ begin
 				when 5  then 'b3.dbo.Server_GameSettings' 
 				when 6  then 'b3.dbo.B3_Session'
 				when 7  then 'b3.dbo.B3_SystemConfig'
+				when 8  then 'b3.dbo.B3_SystemConfig'
 				end
 end
 	
@@ -82,8 +86,14 @@ select @Column =  case
 					    when @B3SettingId = 51 then 'doubleaccount'
 					    when @B3SettingId = 54 then 'IsNorthDakota'
 					    when @B3SettingId = 55 then 'autosessend'
-						 when @B3SettingId = 61 then 'w2trigger'
-					    
+						when @B3SettingId = 61 then 'w2trigger'
+						when @B3SettingId = 62 then 'handpaybypattern'
+						when @B3SettingId = 63 then 'rfrequiredforplay'
+						when @B3SettingId = 65 then 'GeofenceLongitude'
+						when @B3SettingId = 66 then 'GeofenceLatitude'
+						when @B3SettingId = 67 then 'GeofenceYellowBorder'
+						when @B3SettingId = 68 then 'GeofenceRedBorder'
+
 			      else @Column end
 
 
@@ -117,6 +127,30 @@ execute sp_executesql @SQLCommand, @ParamDef, @B3ValueOUT = @B3Value OUTPUT
 return
 
 end
+
+--===============
+--FOR TESTING
+--===============
+/*
+declare
+	@GameId int,
+	@B3SettingId int,
+	@SettingCategoryId int,
+	@Value nvarchar(500),
+	@B3Value nvarchar(500) 
+	--output
+	set @GameId = 0
+	set @B3SettingId = 66
+	set @SettingCategoryId = 8
+	set @Value = '9.8766554'
+	*/
+
+
+
+
+
+
+
 
 
 
