@@ -1,11 +1,11 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:43:00 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:33:20 PM ******/
 DROP PROCEDURE [dbo].[spB3_UpdateB3DBSettings]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:43:00 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:33:20 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -377,6 +377,22 @@ else if (@SettingId = 63)
 begin 
 	SET @sqlCommand = 'Update b3.dbo.Server_GameSettings set rfrequiredforplay =  cast('''+ @value +''' as int)' 
 end
+--GEOFENCING 
+else if (@SettingId = 65)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set GeofenceLongitude =  cast('''+ @value +''' as varchar(16))' 
+end
+else if (@SettingId = 66)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set GeofenceLatitude =  cast('''+ @value +'''as varchar(16))' 
+end
+else if (@SettingId = 67)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set GeofenceYellowBorder =  cast('''+ @value +''' as int)'
+end
+else if (@SettingId = 68)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set GeofenceRedBorder =  cast('''+ @value +''' as int)'
 
 --select @sqlCommand
 exec (@sqlCommand)
@@ -409,5 +425,4 @@ exec (@sqlCommand)
 
 
 GO
-
 
