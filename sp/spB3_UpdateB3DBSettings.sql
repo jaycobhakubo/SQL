@@ -393,7 +393,7 @@ end
 else if (@SettingId = 68)
 begin 
 	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set GeofenceRedBorder =  cast('''+ @value +''' as int)'
-
+end
 --select @sqlCommand
 exec (@sqlCommand)
 
