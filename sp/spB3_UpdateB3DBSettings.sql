@@ -1,11 +1,11 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 4/30/2017 7:40:20 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:43:00 PM ******/
 DROP PROCEDURE [dbo].[spB3_UpdateB3DBSettings]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 4/30/2017 7:40:20 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_UpdateB3DBSettings]    Script Date: 10/23/2019 3:43:00 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -13,8 +13,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-
-create proc [dbo].[spB3_UpdateB3DBSettings]
+CREATE proc [dbo].[spB3_UpdateB3DBSettings]
 (
 @GameId int,
 @SettingId int,
@@ -23,7 +22,9 @@ create proc [dbo].[spB3_UpdateB3DBSettings]
 as
 --==========================
 --DE13029
+--20170502(knc): Add support for w2trigger settings
 --==========================
+
 declare @GameName varchar(50) set @GameName = ''
 declare @TableName varchar(100) set @TableName = ''
 DECLARE @sqlCommand nvarchar(1000)
@@ -367,9 +368,25 @@ begin
 	SET @sqlCommand = 'Update b3.dbo.B3_SystemConfig set w2trigger =  cast('''+ @value +''' as int)' 
 end
 
+--SERVER GAME CONTINUED...
+else if (@SettingId = 62)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.Server_GameSettings set handpaybypattern =  cast('''+ @value +''' as int)' 
+end
+else if (@SettingId = 63)
+begin 
+	SET @sqlCommand = 'Update b3.dbo.Server_GameSettings set rfrequiredforplay =  cast('''+ @value +''' as int)' 
+end
 
 --select @sqlCommand
 exec (@sqlCommand)
+
+
+
+
+
+
+
 
 
 

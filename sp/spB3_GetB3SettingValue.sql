@@ -1,16 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/22/2019 2:44:51 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/23/2019 1:16:51 PM ******/
 DROP PROCEDURE [dbo].[spB3_GetB3SettingValue]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/22/2019 2:44:51 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/23/2019 1:16:51 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 CREATE proc [dbo].[spB3_GetB3SettingValue]
@@ -47,7 +48,7 @@ begin
 				when 5  then 'b3.dbo.Server_GameSettings' 
 				when 6  then 'b3.dbo.B3_Session'
 				when 7  then 'b3.dbo.B3_SystemConfig'
-				when 8  then 'b3.dbo.B3_SystemConfig'
+				when 9  then 'b3.dbo.B3_SystemConfig'
 				end
 end
 	
