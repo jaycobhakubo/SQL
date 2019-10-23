@@ -587,51 +587,51 @@ BEGIN
 	--Enable Geofencing
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 64)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(64,8,NULL, 'Enable Geofencing')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(64,9,NULL, 'Enable Geofencing')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Enable Geofencing' WHERE [SettingID] = 64;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Enable Geofencing' WHERE [SettingID] = 64;
 	END
 
 	--Longitude
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 65)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(65,8,NULL, 'Longitude')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(65,9,NULL, 'Longitude')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Longitude' WHERE [SettingID] = 65;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Longitude' WHERE [SettingID] = 65;
 	END
 
 	--Latitude
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 66)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(66,8,NULL, 'Latitude')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(66,9,NULL, 'Latitude')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Latitude' WHERE [SettingID] = 66;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Latitude' WHERE [SettingID] = 66;
 	END
 
 	--Yellow Zone
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 67)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(67,8,NULL, 'Yellow Zone')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(67,9,NULL, 'Yellow Zone')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Yellow Zone' WHERE [SettingID] = 67;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Yellow Zone' WHERE [SettingID] = 67;
 	END
 
 	--Red Zone
 	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 68)
 	BEGIN
-		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(68,8,NULL, 'Red Zone')
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(68,9,NULL, 'Red Zone')
 	END
 	ELSE
 	BEGIN
-		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 8, [SettingDesc] = 'Red Zone' WHERE [SettingID] = 68;
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Red Zone' WHERE [SettingID] = 68;
 	END
 
 END

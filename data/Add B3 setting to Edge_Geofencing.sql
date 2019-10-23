@@ -4,7 +4,7 @@ declare @Longitude varchar(24)
 declare @Latitude varchar(24)
 declare @YellowZone int
 declare @RedZone int
-declare @B3SettingCategoryId int set @B3SettingCategoryId = 8
+declare @B3SettingCategoryId int set @B3SettingCategoryId = 9
 
 select @Longitude = GeofenceLongitude from b3.dbo.B3_SystemConfig
 select @Latitude = GeofenceLatitude from b3.dbo.B3_SystemConfig
