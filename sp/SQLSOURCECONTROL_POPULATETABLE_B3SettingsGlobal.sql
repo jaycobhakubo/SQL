@@ -634,6 +634,16 @@ BEGIN
 		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 9, [SettingDesc] = 'Red Zone' WHERE [SettingID] = 68;
 	END
 
+		--Game Threads
+	IF NOT EXISTS (SELECT 1 FROM [B3SettingsGlobal] WHERE [SettingID] = 69)
+	BEGIN
+		INSERT INTO [B3SettingsGlobal] ([SettingID],[SettingCategoryID],[SettingValue],[SettingDesc])VALUES(69,5,0, 'Game Threads')
+	END
+	ELSE
+	BEGIN
+		UPDATE [B3SettingsGlobal] SET [SettingCategoryID] = 5, [SettingDesc] = 'Game Threads', [SettingValue] = 0  WHERE [SettingID] = 69;
+	END
+
 END
 
 
