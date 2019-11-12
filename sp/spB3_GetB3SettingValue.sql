@@ -1,16 +1,17 @@
 USE [Daily]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/23/2019 1:16:51 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/31/2019 3:39:48 PM ******/
 DROP PROCEDURE [dbo].[spB3_GetB3SettingValue]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/23/2019 1:16:51 PM ******/
+/****** Object:  StoredProcedure [dbo].[spB3_GetB3SettingValue]    Script Date: 10/31/2019 3:39:48 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -94,7 +95,7 @@ select @Column =  case
 						when @B3SettingId = 66 then 'GeofenceLatitude'
 						when @B3SettingId = 67 then 'GeofenceYellowBorder'
 						when @B3SettingId = 68 then 'GeofenceRedBorder'
-
+						when @B3SettingId = 69 then 'MinGameThreads'
 			      else @Column end
 
 
