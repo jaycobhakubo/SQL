@@ -1,5 +1,5 @@
 
-
+#Added DETERMINISTIC
 DROP FUNCTION IF EXISTS `ftn_database_version`;
 DROP PROCEDURE IF EXISTS `ftn_database_update`;
 DROP PROCEDURE IF EXISTS `ftn_database_update_process`;

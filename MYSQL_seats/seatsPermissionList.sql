@@ -1,5 +1,5 @@
 #282
-
+# Added INSERT IGNORE
 INSERT IGNORE INTO web_usr_permission_info (permission_name) VALUES ('WEB_RSV_EVENT_LINK_VIEW');
 INSERT IGNORE INTO web_usr_permission_info (permission_name) VALUES ('WEB_RSV_EVENT_GROUP_VIEW');
 INSERT IGNORE INTO web_usr_permission_info (permission_name) VALUES ('WEB_RSV_EVENT_GROUP_EDIT');
